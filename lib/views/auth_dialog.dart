@@ -35,7 +35,8 @@ class _AuthDialogState extends State<_AuthDialog> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
     try {
-      final needsConfirmation = _isSignup && await auth.signUp(
+      final needsConfirmation = _isSignup &&
+          await auth.signUp(
             _emailController.text.trim(),
             _passwordController.text,
           );
@@ -71,16 +72,16 @@ class _AuthDialogState extends State<_AuthDialog> {
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(labelText: 'Email'),
-              validator: (value) =>
-                  value == null || !value.contains('@') ? 'Indtast en gyldig email' : null,
+              validator: (value) => value == null || !value.contains('@')
+                  ? 'Indtast en gyldig email'
+                  : null,
             ),
             TextFormField(
               controller: _passwordController,
               obscureText: true,
               decoration: const InputDecoration(labelText: 'Adgangskode'),
-              validator: (value) => value == null || value.length < 6
-                  ? 'Mindst 6 tegn'
-                  : null,
+              validator: (value) =>
+                  value == null || value.length < 6 ? 'Mindst 6 tegn' : null,
             ),
             if (auth.errorMessage != null) ...[
               const SizedBox(height: 12),
@@ -92,15 +93,17 @@ class _AuthDialogState extends State<_AuthDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: _isLoading
-              ? null
-              : () => setState(() => _isSignup = !_isSignup),
+          onPressed:
+              _isLoading ? null : () => setState(() => _isSignup = !_isSignup),
           child: Text(_isSignup ? 'Jeg har en konto' : 'Opret konto'),
         ),
         FilledButton(
-          onPressed: _isLoading || !auth.isConfigured ? null : () => _submit(auth),
+          onPressed:
+              _isLoading || !auth.isConfigured ? null : () => _submit(auth),
           child: _isLoading
-              ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
+              ? const SizedBox.square(
+                  dimension: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2))
               : Text(_isSignup ? 'Opret' : 'Log ind'),
         ),
       ],
