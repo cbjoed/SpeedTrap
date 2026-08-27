@@ -9,7 +9,9 @@ En Flutter-app til live fartmåling og vejledende dansk bødeberegning.
 3. Kør `flutter pub get` i projektroden.
 4. Kør `flutter run` på en fysisk telefon eller emulator med lokation aktiveret.
 
-Appen bruger `geolocator` til GPS og omregner positionens hastighed fra m/s til km/t. Bøderne er vejledende og må ikke bruges som juridisk rådgivning.
+Appen bruger `geolocator` til GPS og omregner positionens hastighed fra m/s til km/t. Den finder automatisk vejens registrerede `maxspeed` via OpenStreetMap/Overpass, når GPS-positionen ændrer sig. Hvis vejen ikke har en registreret fartgrænse, bruges 50 km/t som fallback, og fartgrænsen kan stadig vælges manuelt. Bøderne er vejledende og må ikke bruges som juridisk rådgivning.
+
+Vejopslag kræver internetforbindelse. OpenStreetMap-data kan mangle eller være forældede, så den viste grænse bør altid kontrolleres mod skiltningen på vejen.
 
 ## GitHub Pages
 

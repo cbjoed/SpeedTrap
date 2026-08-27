@@ -10,11 +10,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SpeedometerViewModel>(
       builder: (context, vm, _) {
-        final alertColor = vm.fineResult.hasSuspension
-            ? const Color(0xffbd342f)
-            : vm.fineResult.hasPenalty
-                ? const Color(0xffd27a16)
-                : const Color(0xff0d6b5d);
+        final alertColor = _alertColor(vm.fineResult.amount);
 
         return Scaffold(
           appBar: AppBar(
@@ -64,6 +60,11 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 24),
                   const Text('FARTGRÆNSE', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.2)),
                   const SizedBox(height: 10),
+                  Text('${vm.speedLimit} km/t', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: alertColor)),
+                  Text(vm.speedLimitSource, style: const TextStyle(color: Color(0xff68706b))),
+                  const SizedBox(height: 14),
+                  const Text('MANUEL RESERVE', style: TextStyle(fontWeight: FontWeight.w700, letterSpacing: 1)),
+                  const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -88,6 +89,15 @@ class HomeScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  static Color _alertColor(int amount) {
+    const calm = Color(0xff0d6b5d);
+    const warning = Color(0xffd27a16);
+    const danger = Color(0xffbd342f);
+    if (amount <= 0) return calm;
+    if (amount <= 1800) return Color.lerp(calm, warning, amount / 1800)!;
+    return Color.lerp(warning, danger, ((amount - 1800) / 2900).clamp(0, 1))!;
   }
 
   static String _formatAmount(int amount) => amount.toString().replaceAllMapped(RegExp(r'(?<=\d)(?=(\d{3})+$)'), (_) => '.');

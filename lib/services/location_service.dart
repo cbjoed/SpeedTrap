@@ -14,10 +14,10 @@ class LocationService {
         permission == LocationPermission.whileInUse;
   }
 
-  Stream<double> get speedStream => Geolocator.getPositionStream(
+  Stream<Position> get positionStream => Geolocator.getPositionStream(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.bestForNavigation,
           distanceFilter: 0,
         ),
-      ).map((position) => (position.speed * 3.6).clamp(0, 400).toDouble());
+      );
 }
