@@ -58,22 +58,10 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  const Text('FARTGRÆNSE', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.2)),
+                  const Text('AUTOMATISK FARTGRÆNSE', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.2)),
                   const SizedBox(height: 10),
                   Text('${vm.speedLimit} km/t', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: alertColor)),
                   Text(vm.speedLimitSource, style: const TextStyle(color: Color(0xff68706b))),
-                  const SizedBox(height: 14),
-                  const Text('MANUEL RESERVE', style: TextStyle(fontWeight: FontWeight.w700, letterSpacing: 1)),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [30, 50, 80, 110, 130].map((limit) => ChoiceChip(
-                      label: Text('$limit km/t'),
-                      selected: vm.speedLimit == limit,
-                      onSelected: (_) => vm.setSpeedLimit(limit),
-                    )).toList(),
-                  ),
                   const SizedBox(height: 22),
                   if (vm.isLoading) const LinearProgressIndicator(),
                   if (vm.statusMessage != null) ...[

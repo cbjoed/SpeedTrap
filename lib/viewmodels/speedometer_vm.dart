@@ -28,7 +28,6 @@ class SpeedometerViewModel extends ChangeNotifier {
   FineResult fineResult = const FineResult(amount: 0, overagePercent: 0, isWarning: true);
   bool isLoading = true;
   bool hasPermission = false;
-  bool isSpeedLimitAutomatic = true;
   String speedLimitSource = 'Søger vejens fartgrænse...';
   String? statusMessage;
 
@@ -51,17 +50,6 @@ class SpeedometerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSpeedLimit(int limit) {
-    speedLimit = limit;
-    isSpeedLimitAutomatic = false;
-    speedLimitSource = 'Manuelt valgt';
-    fineResult = _fineCalculator.calculate(
-      currentSpeed: currentSpeed,
-      speedLimit: speedLimit,
-    );
-    notifyListeners();
-  }
-
   void _updatePosition(Position position) {
     currentSpeed = (position.speed * 3.6).clamp(0, 400).toDouble();
     fineResult = _fineCalculator.calculate(
@@ -73,8 +61,7 @@ class SpeedometerViewModel extends ChangeNotifier {
   }
 
   Future<void> _lookupRoadSpeed(Position position) async {
-    if (!isSpeedLimitAutomatic ||
-        (_lastRoadLookup != null && DateTime.now().difference(_lastRoadLookup!) < const Duration(seconds: 20))) {
+    if (_lastRoadLookup != null && DateTime.now().difference(_lastRoadLookup!) < const Duration(seconds: 20)) {
       return;
     }
     _lastRoadLookup = DateTime.now();
@@ -85,7 +72,6 @@ class SpeedometerViewModel extends ChangeNotifier {
         latitude: position.latitude,
         longitude: position.longitude,
       );
-      if (!isSpeedLimitAutomatic) return;
       if (roadLimit != null) {
         speedLimit = roadLimit;
         speedLimitSource = 'Automatisk fra OpenStreetMap';
