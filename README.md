@@ -11,6 +11,16 @@ En Flutter-app til live fartmåling og vejledende dansk bødeberegning.
 
 Appen bruger `geolocator` til GPS og omregner positionens hastighed fra m/s til km/t. Bøderne er vejledende og må ikke bruges som juridisk rådgivning.
 
+## GitHub Pages
+
+Projektet deployes automatisk som Flutter Web via GitHub Actions ved push til `main`.
+
+Aktivér først Pages i repositoryets **Settings → Pages** og vælg **GitHub Actions** som source. Den offentlige adresse bliver normalt:
+
+`https://cbjoed.github.io/SpeedTrap/`
+
+GPS i browseren kræver HTTPS og brugerens tilladelse.
+
 ## Platformstilladelser
 
 Android skal have `ACCESS_FINE_LOCATION` og `ACCESS_COARSE_LOCATION` i `android/app/src/main/AndroidManifest.xml`. iOS skal have `NSLocationWhenInUseUsageDescription` i `ios/Runner/Info.plist`.
