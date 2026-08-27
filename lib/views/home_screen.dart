@@ -1,0 +1,94 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../viewmodels/speedometer_vm.dart';
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<SpeedometerViewModel>(
+      builder: (context, vm, _) {
+        final alertColor = vm.fineResult.hasSuspension
+            ? const Color(0xffbd342f)
+            : vm.fineResult.hasPenalty
+                ? const Color(0xffd27a16)
+                : const Color(0xff0d6b5d);
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('FARTVAGT', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.5)),
+            actions: [
+              IconButton(
+                tooltip: 'Opdater GPS-tilladelse',
+                onPressed: vm.start,
+                icon: const Icon(Icons.gps_fixed),
+              ),
+            ],
+          ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text('LIVE MÅLING', style: TextStyle(color: alertColor, fontWeight: FontWeight.w800, letterSpacing: 1.3)),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    decoration: BoxDecoration(color: alertColor, borderRadius: BorderRadius.circular(8)),
+                    child: Column(
+                      children: [
+                        Text(vm.currentSpeed.round().toString(), style: const TextStyle(fontSize: 92, height: 1, color: Colors.white, fontWeight: FontWeight.w900)),
+                        const Text('KM/T', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, letterSpacing: 3)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+                    child: Column(
+                      children: [
+                        const Text('FORVENTET BØDE', style: TextStyle(fontWeight: FontWeight.w700, letterSpacing: 1)),
+                        const SizedBox(height: 4),
+                        Text('${_formatAmount(vm.fineResult.amount)} DKK', style: TextStyle(fontSize: 38, fontWeight: FontWeight.w900, color: alertColor)),
+                        if (vm.fineResult.hasPenaltyPoint || vm.fineResult.hasSuspension) ...[
+                          const SizedBox(height: 8),
+                          Text(vm.fineResult.hasSuspension ? 'BETINGET FRAKENDELSE' : '1 KLIPPEKORT', style: TextStyle(color: alertColor, fontWeight: FontWeight.w800)),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text('FARTGRÆNSE', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.2)),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [30, 50, 80, 110, 130].map((limit) => ChoiceChip(
+                      label: Text('$limit km/t'),
+                      selected: vm.speedLimit == limit,
+                      onSelected: (_) => vm.setSpeedLimit(limit),
+                    )).toList(),
+                  ),
+                  const SizedBox(height: 22),
+                  if (vm.isLoading) const LinearProgressIndicator(),
+                  if (vm.statusMessage != null) ...[
+                    const SizedBox(height: 12),
+                    Text(vm.statusMessage!, textAlign: TextAlign.center, style: const TextStyle(color: Color(0xffbd342f))),
+                  ],
+                  const SizedBox(height: 12),
+                  Text(vm.hasPermission ? 'GPS FORBINDELSE AKTIV' : 'GPS AFVENTER TILLADELSE', textAlign: TextAlign.center, style: TextStyle(color: alertColor, fontWeight: FontWeight.w700, letterSpacing: .7)),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  static String _formatAmount(int amount) => amount.toString().replaceAllMapped(RegExp(r'(?<=\d)(?=(\d{3})+$)'), (_) => '.');
+}
