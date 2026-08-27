@@ -20,11 +20,16 @@ class SpeedFineTrackerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => SpeedometerViewModel(
-        locationService: LocationService(),
-        fineCalculator: const FineCalculator(),
-      )..start(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: authService),
+        ChangeNotifierProvider(
+          create: (_) => SpeedometerViewModel(
+            locationService: LocationService(),
+            fineCalculator: const FineCalculator(),
+          )..start(),
+        ),
+      ],
       child: MaterialApp(
         title: 'Fartvagt',
         debugShowCheckedModeBanner: false,
@@ -37,10 +42,7 @@ class SpeedFineTrackerApp extends StatelessWidget {
           fontFamily: 'sans',
           useMaterial3: true,
         ),
-        home: Provider.value(
-          value: authService,
-          child: HomeScreen(authService: authService),
-        ),
+        home: HomeScreen(authService: authService),
       ),
     );
   }
