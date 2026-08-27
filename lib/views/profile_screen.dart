@@ -32,9 +32,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _saveName() async {
-    setState(() { _loading = true; _message = null; });
+    setState(() {
+      _loading = true;
+      _message = null;
+    });
     try {
-      await ProfileService(widget.authService).updateDisplayName(_nameController.text);
+      await ProfileService(widget.authService)
+          .updateDisplayName(_nameController.text);
       setState(() => _message = 'Profilnavnet er gemt.');
     } catch (_) {
       setState(() => _message = 'Profilnavnet kunne ikke gemmes.');
@@ -53,7 +57,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final user = widget.authService.currentUser;
     if (user == null) {
-      return const Scaffold(body: Center(child: Text('Log ind for at se din profil.')));
+      return const Scaffold(
+          body: Center(child: Text('Log ind for at se din profil.')));
     }
     return Scaffold(
       appBar: AppBar(title: const Text('MIN PROFIL')),
@@ -64,17 +69,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
           return ListView(
             padding: const EdgeInsets.all(20),
             children: [
-              Text(user.email ?? '', style: Theme.of(context).textTheme.bodySmall),
+              Text(user.email ?? '',
+                  style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: 20),
-              TextField(controller: _nameController, maxLength: 40, decoration: const InputDecoration(labelText: 'Visningsnavn')),
-              FilledButton.icon(onPressed: _loading ? null : _saveName, icon: const Icon(Icons.save), label: const Text('Gem navn')),
-              if (_message != null) Padding(padding: const EdgeInsets.only(top: 12), child: Text(_message!)),
+              TextField(
+                  controller: _nameController,
+                  maxLength: 40,
+                  decoration: const InputDecoration(labelText: 'Visningsnavn')),
+              FilledButton.icon(
+                  onPressed: _loading ? null : _saveName,
+                  icon: const Icon(Icons.save),
+                  label: const Text('Gem navn')),
+              if (_message != null)
+                Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Text(_message!)),
               const SizedBox(height: 28),
-              const Text('LIVSTIDSSTATISTIK', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.2)),
+              const Text('LIVSTIDSSTATISTIK',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w800, letterSpacing: 1.2)),
               const SizedBox(height: 12),
               _StatTile(label: 'Ture', value: '${stats['trip_count'] ?? 0}'),
-              _StatTile(label: 'Distance', value: '${((stats['total_distance_km'] as num?)?.toDouble() ?? 0).toStringAsFixed(1)} km'),
-              _StatTile(label: 'Estimerede bøder undgået', value: '${stats['total_fines_avoided'] ?? 0} DKK'),
+              _StatTile(
+                  label: 'Distance',
+                  value:
+                      '${((stats['total_distance_km'] as num?)?.toDouble() ?? 0).toStringAsFixed(1)} km'),
+              _StatTile(
+                  label: 'Estimerede bøder undgået',
+                  value: '${stats['total_fines_avoided'] ?? 0} DKK'),
             ],
           );
         },
@@ -89,5 +111,8 @@ class _StatTile extends StatelessWidget {
   final String value;
 
   @override
-  Widget build(BuildContext context) => ListTile(title: Text(label), trailing: Text(value, style: const TextStyle(fontWeight: FontWeight.w800)));
+  Widget build(BuildContext context) => ListTile(
+      title: Text(label),
+      trailing:
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w800)));
 }

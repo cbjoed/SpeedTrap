@@ -27,15 +27,19 @@ class LeaderboardService {
 
     final rows = await client
         .from('leaderboard')
-        .select('display_name, total_fines_avoided, total_distance_km, trip_count, safe_trip_count')
-        .order(safest ? 'safe_trip_count' : 'total_fines_avoided', ascending: false)
+        .select(
+            'display_name, total_fines_avoided, total_distance_km, trip_count, safe_trip_count')
+        .order(safest ? 'safe_trip_count' : 'total_fines_avoided',
+            ascending: false)
         .order('total_fines_avoided', ascending: !safest)
         .limit(25);
     return rows
         .map((row) => LeaderboardEntry(
               displayName: row['display_name'] as String? ?? 'Anonym bruger',
-              totalFinesAvoided: (row['total_fines_avoided'] as num?)?.toInt() ?? 0,
-              totalDistanceKm: (row['total_distance_km'] as num?)?.toDouble() ?? 0,
+              totalFinesAvoided:
+                  (row['total_fines_avoided'] as num?)?.toInt() ?? 0,
+              totalDistanceKm:
+                  (row['total_distance_km'] as num?)?.toDouble() ?? 0,
               tripCount: (row['trip_count'] as num?)?.toInt() ?? 0,
               safeTripCount: (row['safe_trip_count'] as num?)?.toInt() ?? 0,
             ))

@@ -92,7 +92,8 @@ class HomeScreen extends StatelessWidget {
                   FilledButton.icon(
                     onPressed: vm.isTripActive ? vm.endTrip : vm.startTrip,
                     icon: Icon(vm.isTripActive ? Icons.stop : Icons.play_arrow),
-                    label: Text(vm.isTripActive ? 'SLUT TUR OG GEM' : 'START TUR'),
+                    label:
+                        Text(vm.isTripActive ? 'SLUT TUR OG GEM' : 'START TUR'),
                   ),
                   if (vm.isTripActive) ...[
                     const SizedBox(height: 10),

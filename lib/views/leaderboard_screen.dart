@@ -54,11 +54,13 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (snapshot.hasError) {
-                  return const Center(child: Text('Ranglisten kunne ikke hentes.'));
+                  return const Center(
+                      child: Text('Ranglisten kunne ikke hentes.'));
                 }
                 final entries = snapshot.data ?? const [];
                 if (entries.isEmpty) {
-                  return const Center(child: Text('Ingen ture er registreret endnu.'));
+                  return const Center(
+                      child: Text('Ingen ture er registreret endnu.'));
                 }
                 return RefreshIndicator(
                   onRefresh: () async => setState(_reload),
@@ -69,7 +71,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       return ListTile(
                         leading: CircleAvatar(child: Text('${index + 1}')),
                         title: Text(entry.displayName),
-                        subtitle: Text('${entry.tripCount} ture · ${entry.safeTripCount} sikre ture · ${entry.totalDistanceKm.toStringAsFixed(1)} km'),
+                        subtitle: Text(
+                            '${entry.tripCount} ture · ${entry.safeTripCount} sikre ture · ${entry.totalDistanceKm.toStringAsFixed(1)} km'),
                         trailing: Text(_safest
                             ? '${entry.totalDistanceKm.toStringAsFixed(1)} km'
                             : '${entry.totalFinesAvoided} DKK'),

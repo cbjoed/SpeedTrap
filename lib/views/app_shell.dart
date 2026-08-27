@@ -28,10 +28,12 @@ class _AppShellState extends State<AppShell> {
       body: IndexedStack(index: _selectedIndex, children: pages),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
-        onDestinationSelected: (index) => setState(() => _selectedIndex = index),
+        onDestinationSelected: (index) =>
+            setState(() => _selectedIndex = index),
         destinations: const [
           NavigationDestination(icon: Icon(Icons.speed), label: 'Måling'),
-          NavigationDestination(icon: Icon(Icons.emoji_events), label: 'Rangliste'),
+          NavigationDestination(
+              icon: Icon(Icons.emoji_events), label: 'Rangliste'),
           NavigationDestination(icon: Icon(Icons.person), label: 'Profil'),
         ],
       ),

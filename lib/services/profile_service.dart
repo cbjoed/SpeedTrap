@@ -31,7 +31,11 @@ class ProfileService {
     final user = _authService.currentUser;
     final client = _authService.client;
     if (user == null || client == null) {
-      return {'trip_count': 0, 'total_distance_km': 0, 'total_fines_avoided': 0};
+      return {
+        'trip_count': 0,
+        'total_distance_km': 0,
+        'total_fines_avoided': 0
+      };
     }
     final row = await client
         .from('leaderboard')
