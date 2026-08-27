@@ -7,8 +7,10 @@ class RoadSpeedService {
 
   final http.Client? _client;
 
-  Future<int?> lookupSpeedLimit({required double latitude, required double longitude}) async {
-    final query = '''[out:json][timeout:8];way(around:50,$latitude,$longitude)[highway][maxspeed];out tags;''';
+  Future<int?> lookupSpeedLimit(
+      {required double latitude, required double longitude}) async {
+    final query =
+        '''[out:json][timeout:8];way(around:50,$latitude,$longitude)[highway][maxspeed];out tags;''';
     final response = await (_client ?? http.Client()).post(
       Uri.parse('https://overpass-api.de/api/interpreter'),
       headers: const {'content-type': 'application/x-www-form-urlencoded'},
@@ -19,9 +21,11 @@ class RoadSpeedService {
       return null;
     }
 
-    final elements = (jsonDecode(response.body) as Map<String, dynamic>)['elements'] as List<dynamic>?;
+    final elements = (jsonDecode(response.body)
+        as Map<String, dynamic>)['elements'] as List<dynamic>?;
     for (final element in elements ?? const []) {
-      final tags = (element as Map<String, dynamic>)['tags'] as Map<String, dynamic>?;
+      final tags =
+          (element as Map<String, dynamic>)['tags'] as Map<String, dynamic>?;
       final parsed = _parseSpeed(tags?['maxspeed']?.toString());
       if (parsed != null) {
         return parsed;

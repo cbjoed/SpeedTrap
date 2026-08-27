@@ -3,7 +3,8 @@ import '../models/fine_result.dart';
 class FineCalculator {
   const FineCalculator();
 
-  FineResult calculate({required double currentSpeed, required int speedLimit}) {
+  FineResult calculate(
+      {required double currentSpeed, required int speedLimit}) {
     if (currentSpeed <= speedLimit) {
       return const FineResult(amount: 0, overagePercent: 0, isWarning: true);
     }

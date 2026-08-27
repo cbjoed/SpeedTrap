@@ -14,8 +14,8 @@ class SpeedometerViewModel extends ChangeNotifier {
     FineCalculator? fineCalculator,
     RoadSpeedService? roadSpeedService,
   })  : _locationService = locationService ?? LocationService(),
-      _fineCalculator = fineCalculator ?? const FineCalculator(),
-      _roadSpeedService = roadSpeedService ?? const RoadSpeedService();
+        _fineCalculator = fineCalculator ?? const FineCalculator(),
+        _roadSpeedService = roadSpeedService ?? const RoadSpeedService();
 
   final LocationService _locationService;
   final FineCalculator _fineCalculator;
@@ -25,7 +25,8 @@ class SpeedometerViewModel extends ChangeNotifier {
 
   double currentSpeed = 0;
   int speedLimit = 50;
-  FineResult fineResult = const FineResult(amount: 0, overagePercent: 0, isWarning: true);
+  FineResult fineResult =
+      const FineResult(amount: 0, overagePercent: 0, isWarning: true);
   bool isLoading = true;
   bool hasPermission = false;
   String speedLimitSource = 'Søger vejens fartgrænse...';
@@ -45,7 +46,8 @@ class SpeedometerViewModel extends ChangeNotifier {
     }
 
     await _positionSubscription?.cancel();
-    _positionSubscription = _locationService.positionStream.listen(_updatePosition);
+    _positionSubscription =
+        _locationService.positionStream.listen(_updatePosition);
     isLoading = false;
     notifyListeners();
   }
@@ -61,7 +63,9 @@ class SpeedometerViewModel extends ChangeNotifier {
   }
 
   Future<void> _lookupRoadSpeed(Position position) async {
-    if (_lastRoadLookup != null && DateTime.now().difference(_lastRoadLookup!) < const Duration(seconds: 20)) {
+    if (_lastRoadLookup != null &&
+        DateTime.now().difference(_lastRoadLookup!) <
+            const Duration(seconds: 20)) {
       return;
     }
     _lastRoadLookup = DateTime.now();
@@ -78,7 +82,8 @@ class SpeedometerViewModel extends ChangeNotifier {
       } else {
         speedLimitSource = 'Ingen vejgrænse fundet - viser 50 km/t';
       }
-      fineResult = _fineCalculator.calculate(currentSpeed: currentSpeed, speedLimit: speedLimit);
+      fineResult = _fineCalculator.calculate(
+          currentSpeed: currentSpeed, speedLimit: speedLimit);
       notifyListeners();
     } catch (_) {
       speedLimitSource = 'Vejgrænse kunne ikke hentes - viser 50 km/t';

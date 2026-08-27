@@ -14,7 +14,9 @@ class HomeScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('FARTVAGT', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.5)),
+            title: const Text('FARTVAGT',
+                style:
+                    TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.5)),
             actions: [
               IconButton(
                 tooltip: 'Opdater GPS-tilladelse',
@@ -29,47 +31,94 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text('LIVE MÅLING', style: TextStyle(color: alertColor, fontWeight: FontWeight.w800, letterSpacing: 1.3)),
+                  Text('LIVE MÅLING',
+                      style: TextStyle(
+                          color: alertColor,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.3)),
                   const SizedBox(height: 10),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 30),
-                    decoration: BoxDecoration(color: alertColor, borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(
+                        color: alertColor,
+                        borderRadius: BorderRadius.circular(8)),
                     child: Column(
                       children: [
-                        Text(vm.currentSpeed.round().toString(), style: const TextStyle(fontSize: 92, height: 1, color: Colors.white, fontWeight: FontWeight.w900)),
-                        const Text('KM/T', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, letterSpacing: 3)),
+                        Text(vm.currentSpeed.round().toString(),
+                            style: const TextStyle(
+                                fontSize: 92,
+                                height: 1,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900)),
+                        const Text('KM/T',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 3)),
                       ],
                     ),
                   ),
                   const SizedBox(height: 18),
                   Container(
                     padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8)),
                     child: Column(
                       children: [
-                        const Text('FORVENTET BØDE', style: TextStyle(fontWeight: FontWeight.w700, letterSpacing: 1)),
+                        const Text('FORVENTET BØDE',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700, letterSpacing: 1)),
                         const SizedBox(height: 4),
-                        Text('${_formatAmount(vm.fineResult.amount)} DKK', style: TextStyle(fontSize: 38, fontWeight: FontWeight.w900, color: alertColor)),
-                        if (vm.fineResult.hasPenaltyPoint || vm.fineResult.hasSuspension) ...[
+                        Text('${_formatAmount(vm.fineResult.amount)} DKK',
+                            style: TextStyle(
+                                fontSize: 38,
+                                fontWeight: FontWeight.w900,
+                                color: alertColor)),
+                        if (vm.fineResult.hasPenaltyPoint ||
+                            vm.fineResult.hasSuspension) ...[
                           const SizedBox(height: 8),
-                          Text(vm.fineResult.hasSuspension ? 'BETINGET FRAKENDELSE' : '1 KLIPPEKORT', style: TextStyle(color: alertColor, fontWeight: FontWeight.w800)),
+                          Text(
+                              vm.fineResult.hasSuspension
+                                  ? 'BETINGET FRAKENDELSE'
+                                  : '1 KLIPPEKORT',
+                              style: TextStyle(
+                                  color: alertColor,
+                                  fontWeight: FontWeight.w800)),
                         ],
                       ],
                     ),
                   ),
                   const SizedBox(height: 24),
-                  const Text('AUTOMATISK FARTGRÆNSE', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.2)),
+                  const Text('AUTOMATISK FARTGRÆNSE',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w800, letterSpacing: 1.2)),
                   const SizedBox(height: 10),
-                  Text('${vm.speedLimit} km/t', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: alertColor)),
-                  Text(vm.speedLimitSource, style: const TextStyle(color: Color(0xff68706b))),
+                  Text('${vm.speedLimit} km/t',
+                      style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w900,
+                          color: alertColor)),
+                  Text(vm.speedLimitSource,
+                      style: const TextStyle(color: Color(0xff68706b))),
                   const SizedBox(height: 22),
                   if (vm.isLoading) const LinearProgressIndicator(),
                   if (vm.statusMessage != null) ...[
                     const SizedBox(height: 12),
-                    Text(vm.statusMessage!, textAlign: TextAlign.center, style: const TextStyle(color: Color(0xffbd342f))),
+                    Text(vm.statusMessage!,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Color(0xffbd342f))),
                   ],
                   const SizedBox(height: 12),
-                  Text(vm.hasPermission ? 'GPS FORBINDELSE AKTIV' : 'GPS AFVENTER TILLADELSE', textAlign: TextAlign.center, style: TextStyle(color: alertColor, fontWeight: FontWeight.w700, letterSpacing: .7)),
+                  Text(
+                      vm.hasPermission
+                          ? 'GPS FORBINDELSE AKTIV'
+                          : 'GPS AFVENTER TILLADELSE',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: alertColor,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: .7)),
                 ],
               ),
             ),
@@ -88,5 +137,7 @@ class HomeScreen extends StatelessWidget {
     return Color.lerp(warning, danger, ((amount - 1800) / 2900).clamp(0, 1))!;
   }
 
-  static String _formatAmount(int amount) => amount.toString().replaceAllMapped(RegExp(r'(?<=\d)(?=(\d{3})+$)'), (_) => '.');
+  static String _formatAmount(int amount) => amount
+      .toString()
+      .replaceAllMapped(RegExp(r'(?<=\d)(?=(\d{3})+$)'), (_) => '.');
 }
