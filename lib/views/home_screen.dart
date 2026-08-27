@@ -11,6 +11,8 @@ class HomeScreen extends StatelessWidget {
     return Consumer<SpeedometerViewModel>(
       builder: (context, vm, _) {
         final alertColor = _alertColor(vm.fineResult.amount);
+        const overLimitColor = Color(0xffbd342f);
+        final speedCardColor = vm.isOverSpeeding ? overLimitColor : alertColor;
 
         return Scaffold(
           appBar: AppBar(
@@ -37,25 +39,30 @@ class HomeScreen extends StatelessWidget {
                           fontWeight: FontWeight.w800,
                           letterSpacing: 1.3)),
                   const SizedBox(height: 10),
-                  Container(
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 220),
                     padding: const EdgeInsets.symmetric(vertical: 30),
                     decoration: BoxDecoration(
-                        color: alertColor,
+                        color: speedCardColor,
                         borderRadius: BorderRadius.circular(8)),
-                    child: Column(
-                      children: [
-                        Text(vm.currentSpeed.round().toString(),
-                            style: const TextStyle(
-                                fontSize: 92,
-                                height: 1,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900)),
-                        const Text('KM/T',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 3)),
-                      ],
+                    child: AnimatedScale(
+                      duration: const Duration(milliseconds: 220),
+                      scale: vm.isOverSpeeding ? 1.03 : 1,
+                      child: Column(
+                        children: [
+                          Text(vm.currentSpeed.round().toString(),
+                              style: const TextStyle(
+                                  fontSize: 92,
+                                  height: 1,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900)),
+                          const Text('KM/T',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 3)),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 18),
@@ -119,6 +126,27 @@ class HomeScreen extends StatelessWidget {
                           color: alertColor,
                           fontWeight: FontWeight.w700,
                           letterSpacing: .7)),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Row(
+                      children: [
+                        const Expanded(
+                          child: Text('LYDADVARSEL VED FARTOVERSKRIDELSE',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: .5)),
+                        ),
+                        Switch(
+                          value: vm.soundEffectsEnabled,
+                          onChanged: vm.setSoundEffectsEnabled,
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
