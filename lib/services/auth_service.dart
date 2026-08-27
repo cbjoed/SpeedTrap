@@ -38,12 +38,18 @@ class AuthService extends ChangeNotifier {
     final response = await _run(() => _client!.auth.signUp(
           email: email,
           password: password,
+          emailRedirectTo: _emailRedirectUrl,
         ));
     return response?.user != null && response?.session == null;
   }
 
   Future<void> signOut() async {
     await _run(() => _client!.auth.signOut());
+  }
+
+  String? get _emailRedirectUrl {
+    if (!kIsWeb) return null;
+    return Uri.base.origin + Uri.base.path;
   }
 
   Future<T?> _run<T>(Future<T> Function() action) async {
