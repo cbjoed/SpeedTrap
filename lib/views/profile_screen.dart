@@ -25,10 +25,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<Map<String, dynamic>> _load() async {
-    if (widget.authService.currentUser == null) return {};
-    final service = ProfileService(widget.authService);
-    _nameController.text = await service.loadDisplayName();
-    return service.loadLifetimeStats();
+    try {
+      if (widget.authService.currentUser == null) return {};
+      final service = ProfileService(widget.authService);
+      _nameController.text = await service.loadDisplayName();
+      return await service.loadLifetimeStats();
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   Future<void> _saveName() async {
