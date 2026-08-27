@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../models/fine_result.dart';
@@ -29,8 +30,18 @@ class SpeedometerViewModel extends ChangeNotifier {
       const FineResult(amount: 0, overagePercent: 0, isWarning: true);
   bool isLoading = true;
   bool hasPermission = false;
+  bool soundEffectsEnabled = true;
   String speedLimitSource = 'Søger vejens fartgrænse...';
   String? statusMessage;
+  bool _wasOverSpeeding = false;
+
+  bool get isOverSpeeding => currentSpeed > speedLimit;
+
+  void setSoundEffectsEnabled(bool enabled) {
+    if (soundEffectsEnabled == enabled) return;
+    soundEffectsEnabled = enabled;
+    notifyListeners();
+  }
 
   Future<void> start() async {
     isLoading = true;
@@ -54,10 +65,7 @@ class SpeedometerViewModel extends ChangeNotifier {
 
   void _updatePosition(Position position) {
     currentSpeed = (position.speed * 3.6).clamp(0, 400).toDouble();
-    fineResult = _fineCalculator.calculate(
-      currentSpeed: currentSpeed,
-      speedLimit: speedLimit,
-    );
+    _refreshFineAndWarnings();
     notifyListeners();
     _lookupRoadSpeed(position);
   }
@@ -82,13 +90,24 @@ class SpeedometerViewModel extends ChangeNotifier {
       } else {
         speedLimitSource = 'Ingen vejgrænse fundet - viser 50 km/t';
       }
-      fineResult = _fineCalculator.calculate(
-          currentSpeed: currentSpeed, speedLimit: speedLimit);
+      _refreshFineAndWarnings();
       notifyListeners();
     } catch (_) {
       speedLimitSource = 'Vejgrænse kunne ikke hentes - viser 50 km/t';
       notifyListeners();
     }
+  }
+
+  void _refreshFineAndWarnings() {
+    final overSpeeding = isOverSpeeding;
+    if (overSpeeding && !_wasOverSpeeding && soundEffectsEnabled) {
+      SystemSound.play(SystemSoundType.alert);
+    }
+    _wasOverSpeeding = overSpeeding;
+    fineResult = _fineCalculator.calculate(
+      currentSpeed: currentSpeed,
+      speedLimit: speedLimit,
+    );
   }
 
   @override
