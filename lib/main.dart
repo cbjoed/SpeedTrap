@@ -4,8 +4,9 @@ import 'package:provider/provider.dart';
 import 'services/fine_calculator.dart';
 import 'services/location_service.dart';
 import 'services/auth_service.dart';
+import 'services/drive_log_service.dart';
 import 'viewmodels/speedometer_vm.dart';
-import 'views/home_screen.dart';
+import 'views/app_shell.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +28,7 @@ class SpeedFineTrackerApp extends StatelessWidget {
           create: (_) => SpeedometerViewModel(
             locationService: LocationService(),
             fineCalculator: const FineCalculator(),
+            driveLogService: DriveLogService(authService),
           )..start(),
         ),
       ],
@@ -42,7 +44,7 @@ class SpeedFineTrackerApp extends StatelessWidget {
           fontFamily: 'sans',
           useMaterial3: true,
         ),
-        home: HomeScreen(authService: authService),
+        home: AppShell(authService: authService),
       ),
     );
   }

@@ -89,6 +89,20 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 18),
+                  FilledButton.icon(
+                    onPressed: vm.isTripActive ? vm.endTrip : vm.startTrip,
+                    icon: Icon(vm.isTripActive ? Icons.stop : Icons.play_arrow),
+                    label: Text(vm.isTripActive ? 'SLUT TUR OG GEM' : 'START TUR'),
+                  ),
+                  if (vm.isTripActive) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      '${vm.tripDistanceKm.toStringAsFixed(1)} km · Maks ${vm.tripMaxSpeed.round()} km/t · ${vm.tripFinesAvoided} DKK undgået',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Color(0xff68706b)),
+                    ),
+                  ],
+                  const SizedBox(height: 18),
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(

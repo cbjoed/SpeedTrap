@@ -35,6 +35,10 @@ flutter build web --release `
 
 Brug kun Supabase-projektets publicerbare anon/publishable key i webbygget. Den hemmelige service role key må aldrig sendes til browseren. GitHub Pages-workflowet bruger repository variables til build arguments; værdierne kan ikke lægges sikkert i en offentlig fil.
 
+## Leaderboard og profiler
+
+Kør [supabase/schema.sql](supabase/schema.sql) én gang i Supabase Dashboard under **SQL Editor**. Scriptet opretter `profiles`, `drive_logs`, signup-triggeren og den offentlige `leaderboard`-view med RLS-politikker. Brugeren skal være logget ind for at gemme ture og ændre visningsnavn. Tryk **START TUR** før kørsel og **SLUT TUR OG GEM** bagefter for at gemme turens makshastighed, distance og estimerede undgåede bøder.
+
 ## Platformstilladelser
 
 Android skal have `ACCESS_FINE_LOCATION` og `ACCESS_COARSE_LOCATION` i `android/app/src/main/AndroidManifest.xml`. iOS skal have `NSLocationWhenInUseUsageDescription` i `ios/Runner/Info.plist`.

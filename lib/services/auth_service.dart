@@ -9,6 +9,7 @@ class AuthService extends ChangeNotifier {
 
   bool get isConfigured => _client != null;
   User? get currentUser => _client?.auth.currentUser;
+  SupabaseClient? get client => _client;
 
   static Future<AuthService> create() async {
     const url = String.fromEnvironment('SUPABASE_URL');

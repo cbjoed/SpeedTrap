@@ -5,8 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../models/fine_result.dart';
+import '../models/drive_stats.dart';
 import '../models/vehicle_profile.dart';
 import '../services/fine_calculator.dart';
+import '../services/drive_log_service.dart';
 import '../services/location_service.dart';
 import '../services/road_speed_service.dart';
 import '../services/vehicle_preference_service.dart';
@@ -17,16 +19,19 @@ class SpeedometerViewModel extends ChangeNotifier {
     FineCalculator? fineCalculator,
     RoadSpeedService? roadSpeedService,
     VehiclePreferenceService? vehiclePreferenceService,
+    DriveLogService? driveLogService,
   })  : _locationService = locationService ?? LocationService(),
         _fineCalculator = fineCalculator ?? const FineCalculator(),
         _roadSpeedService = roadSpeedService ?? const RoadSpeedService(),
         _vehiclePreferenceService =
-            vehiclePreferenceService ?? const VehiclePreferenceService();
+            vehiclePreferenceService ?? const VehiclePreferenceService(),
+        _driveLogService = driveLogService;
 
   final LocationService _locationService;
   final FineCalculator _fineCalculator;
   final RoadSpeedService _roadSpeedService;
   final VehiclePreferenceService _vehiclePreferenceService;
+  final DriveLogService? _driveLogService;
   StreamSubscription<Position>? _positionSubscription;
   DateTime? _lastRoadLookup;
   int _roadSpeedLimit = 50;
@@ -43,6 +48,13 @@ class SpeedometerViewModel extends ChangeNotifier {
   String? statusMessage;
   bool _wasOverSpeeding = false;
   VehicleType vehicleType = VehicleType.car;
+  bool isTripActive = false;
+  double tripDistanceKm = 0;
+  double tripMaxSpeed = 0;
+  int tripFinesAvoided = 0;
+  DateTime? _tripStartedAt;
+  Position? _lastTripPosition;
+  int _lastFineAmount = 0;
 
   bool get isOverSpeeding => currentSpeed > speedLimit;
   VehicleProfile get vehicleProfile => vehicleProfiles[vehicleType]!;
@@ -90,9 +102,59 @@ class SpeedometerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void startTrip() {
+    tripDistanceKm = 0;
+    tripMaxSpeed = currentSpeed;
+    tripFinesAvoided = 0;
+    _tripStartedAt = DateTime.now();
+    _lastTripPosition = null;
+    _lastFineAmount = fineResult.amount;
+    isTripActive = true;
+    notifyListeners();
+  }
+
+  Future<void> endTrip() async {
+    if (!isTripActive) return;
+    final startedAt = _tripStartedAt;
+    isTripActive = false;
+    _tripStartedAt = null;
+    _lastTripPosition = null;
+    notifyListeners();
+    if (startedAt == null) return;
+    try {
+      await _driveLogService?.save(DriveStats(
+        maxSpeed: tripMaxSpeed,
+        distanceKm: tripDistanceKm,
+        finesAvoided: tripFinesAvoided,
+        duration: DateTime.now().difference(startedAt),
+      ));
+      statusMessage = 'Turen er gemt.';
+    } catch (_) {
+      statusMessage = 'Turen kunne ikke gemmes.';
+    }
+    notifyListeners();
+  }
+
   void _updatePosition(Position position) {
     currentSpeed = (position.speed * 3.6).clamp(0, 400).toDouble();
     _refreshFineAndWarnings();
+    if (isTripActive) {
+      if (_lastTripPosition != null) {
+        tripDistanceKm += Geolocator.distanceBetween(
+              _lastTripPosition!.latitude,
+              _lastTripPosition!.longitude,
+              position.latitude,
+              position.longitude,
+            ) /
+            1000;
+      }
+      tripMaxSpeed = tripMaxSpeed > currentSpeed ? tripMaxSpeed : currentSpeed;
+      if (!isOverSpeeding && _lastFineAmount > 0) {
+        tripFinesAvoided += _lastFineAmount;
+      }
+      _lastTripPosition = position;
+      _lastFineAmount = fineResult.amount;
+    }
     notifyListeners();
     _lookupRoadSpeed(position);
   }
