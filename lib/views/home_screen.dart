@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/vehicle_profile.dart';
+import '../services/auth_service.dart';
 import '../viewmodels/speedometer_vm.dart';
+import 'auth_dialog.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.authService});
+
+  final AuthService? authService;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +25,26 @@ class HomeScreen extends StatelessWidget {
                 style:
                     TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.5)),
             actions: [
+              if (authService != null)
+                ListenableBuilder(
+                  listenable: authService!,
+                  builder: (context, _) {
+                    final auth = authService!;
+                    return auth.currentUser == null
+                        ? IconButton(
+                            tooltip: 'Log ind',
+                            onPressed: auth.isConfigured
+                                ? () => showAuthDialog(context)
+                                : null,
+                            icon: const Icon(Icons.account_circle_outlined),
+                          )
+                        : IconButton(
+                            tooltip: 'Log ud',
+                            onPressed: auth.signOut,
+                            icon: const Icon(Icons.logout),
+                          );
+                  },
+                ),
               IconButton(
                 tooltip: 'Opdater GPS-tilladelse',
                 onPressed: vm.start,

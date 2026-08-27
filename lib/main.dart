@@ -3,15 +3,20 @@ import 'package:provider/provider.dart';
 
 import 'services/fine_calculator.dart';
 import 'services/location_service.dart';
+import 'services/auth_service.dart';
 import 'viewmodels/speedometer_vm.dart';
 import 'views/home_screen.dart';
 
-void main() {
-  runApp(const SpeedFineTrackerApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final authService = await AuthService.create();
+  runApp(SpeedFineTrackerApp(authService: authService));
 }
 
 class SpeedFineTrackerApp extends StatelessWidget {
-  const SpeedFineTrackerApp({super.key});
+  const SpeedFineTrackerApp({super.key, required this.authService});
+
+  final AuthService authService;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +37,10 @@ class SpeedFineTrackerApp extends StatelessWidget {
           fontFamily: 'sans',
           useMaterial3: true,
         ),
-        home: const HomeScreen(),
+        home: Provider.value(
+          value: authService,
+          child: HomeScreen(authService: authService),
+        ),
       ),
     );
   }

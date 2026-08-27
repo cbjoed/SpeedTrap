@@ -23,6 +23,18 @@ Aktivér først Pages i repositoryets **Settings → Pages** og vælg **GitHub A
 
 GPS i browseren kræver HTTPS og brugerens tilladelse.
 
+## Supabase-authentication
+
+Opret et projekt på [supabase.com](https://supabase.com), og slå Email-provider til under Authentication → Providers. Webbygget læser legitimationsoplysninger som Dart-defines. GitHub Actions forventer dem som repository variables med navnene `SUPABASE_URL` og `SUPABASE_ANON_KEY`:
+
+```powershell
+flutter build web --release `
+	--dart-define=SUPABASE_URL=https://<project-ref>.supabase.co `
+	--dart-define=SUPABASE_ANON_KEY=<publishable-anon-key>
+```
+
+Brug kun Supabase-projektets publicerbare anon/publishable key i webbygget. Den hemmelige service role key må aldrig sendes til browseren. GitHub Pages-workflowet bruger repository variables til build arguments; værdierne kan ikke lægges sikkert i en offentlig fil.
+
 ## Platformstilladelser
 
 Android skal have `ACCESS_FINE_LOCATION` og `ACCESS_COARSE_LOCATION` i `android/app/src/main/AndroidManifest.xml`. iOS skal have `NSLocationWhenInUseUsageDescription` i `ios/Runner/Info.plist`.
