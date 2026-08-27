@@ -10,9 +10,25 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 import 'package:speed_fine_tracker/models/fine_result.dart';
+import 'package:speed_fine_tracker/models/vehicle_profile.dart';
 import 'package:speed_fine_tracker/services/fine_calculator.dart';
+import 'package:speed_fine_tracker/services/vehicle_preference_service.dart';
 import 'package:speed_fine_tracker/viewmodels/speedometer_vm.dart';
 import 'package:speed_fine_tracker/views/home_screen.dart';
+
+class FakeVehiclePreferenceService extends VehiclePreferenceService {
+  FakeVehiclePreferenceService(this._vehicleType);
+
+  VehicleType _vehicleType;
+
+  @override
+  Future<VehicleType> loadVehicleType() async => _vehicleType;
+
+  @override
+  Future<void> saveVehicleType(VehicleType type) async {
+    _vehicleType = type;
+  }
+}
 
 void main() {
   test('calculates a fine and penalty point above 30 percent', () {
@@ -23,6 +39,18 @@ void main() {
     expect(result.amount, 2900);
     expect(result.hasPenaltyPoint, isTrue);
     expect(result, isA<FineResult>());
+  });
+
+  test('calculates higher fine for truck profile multiplier', () {
+    const calculator = FineCalculator();
+
+    final result = calculator.calculate(
+      currentSpeed: 65,
+      speedLimit: 50,
+      fineMultiplier: vehicleProfiles[VehicleType.truck]!.fineMultiplier,
+    );
+
+    expect(result.amount, 4350);
   });
 
   testWidgets('shows red live-speed indicator when above speed limit',
@@ -64,5 +92,26 @@ void main() {
     await tester.pump();
 
     expect(vm.soundEffectsEnabled, isFalse);
+  });
+
+  testWidgets('updates vehicle profile from selector', (tester) async {
+    final vm = SpeedometerViewModel(
+      vehiclePreferenceService:
+          FakeVehiclePreferenceService(VehicleType.car),
+    );
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<SpeedometerViewModel>.value(
+        value: vm,
+        child: const MaterialApp(home: HomeScreen()),
+      ),
+    );
+
+    await tester.tap(find.byType(DropdownButton<VehicleType>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Lastbil').last);
+    await tester.pumpAndSettle();
+
+    expect(vm.vehicleType, VehicleType.truck);
   });
 }

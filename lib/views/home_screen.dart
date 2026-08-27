@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/vehicle_profile.dart';
 import '../viewmodels/speedometer_vm.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -94,6 +95,34 @@ class HomeScreen extends StatelessWidget {
                                   fontWeight: FontWeight.w800)),
                         ],
                       ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text('KØRETØJSPROFIL',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w800, letterSpacing: 1.2)),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8)),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<VehicleType>(
+                        value: vm.vehicleType,
+                        isExpanded: true,
+                        onChanged: (value) {
+                          if (value != null) {
+                            vm.setVehicleType(value);
+                          }
+                        },
+                        items: vehicleProfiles.values
+                            .map((profile) => DropdownMenuItem<VehicleType>(
+                                  value: profile.type,
+                                  child: Text(profile.label),
+                                ))
+                            .toList(growable: false),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
