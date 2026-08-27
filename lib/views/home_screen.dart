@@ -33,9 +33,7 @@ class HomeScreen extends StatelessWidget {
                     return auth.currentUser == null
                         ? IconButton(
                             tooltip: 'Log ind',
-                            onPressed: auth.isConfigured
-                                ? () => showAuthDialog(context)
-                                : null,
+                            onPressed: () => showAuthDialog(context),
                             icon: const Icon(Icons.account_circle_outlined),
                           )
                         : IconButton(

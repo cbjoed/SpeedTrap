@@ -35,11 +35,18 @@ class _AuthDialogState extends State<_AuthDialog> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
     try {
-      final needsConfirmation = _isSignup &&
-          await auth.signUp(
-            _emailController.text.trim(),
-            _passwordController.text,
-          );
+      final needsConfirmation = _isSignup
+          ? await auth.signUp(
+              _emailController.text.trim(),
+              _passwordController.text,
+            )
+          : false;
+      if (!_isSignup) {
+        await auth.signIn(
+          _emailController.text.trim(),
+          _passwordController.text,
+        );
+      }
       if (!mounted) return;
       if (needsConfirmation) {
         Navigator.pop(context);
