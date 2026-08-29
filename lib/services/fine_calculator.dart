@@ -7,7 +7,8 @@ class FineCalculator {
       {required double currentSpeed,
       required int speedLimit,
       double fineMultiplier = 1}) {
-    if (currentSpeed <= speedLimit) {
+    // Allow +3 km/h buffer before fining
+    if (currentSpeed <= speedLimit + 3) {
       return const FineResult(amount: 0, overagePercent: 0, isWarning: true);
     }
 

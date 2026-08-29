@@ -162,7 +162,7 @@ class SpeedometerViewModel extends ChangeNotifier {
   Future<void> _lookupRoadSpeed(Position position) async {
     if (_lastRoadLookup != null &&
         DateTime.now().difference(_lastRoadLookup!) <
-            const Duration(seconds: 20)) {
+            const Duration(seconds: 5)) {
       return;
     }
     _lastRoadLookup = DateTime.now();
