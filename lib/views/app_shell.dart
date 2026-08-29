@@ -48,7 +48,8 @@ class _AppShellState extends State<AppShell> {
           NavigationDestination(
               icon: Icon(Icons.emoji_events), label: 'Rangliste'),
           NavigationDestination(icon: Icon(Icons.person), label: 'Profil'),
-          NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Portfolio'),
+          NavigationDestination(
+              icon: Icon(Icons.home_outlined), label: 'Portfolio'),
         ],
       ),
     );
